@@ -132,9 +132,20 @@ fi
 
 # ---------------------------------------------------------------- 推送
 say "推送到 origin/$BRANCH"
+pushed=0
 if [[ $GH_OK -eq 1 ]]; then
-  run git push -u origin "$BRANCH"
-else
+  # gh 登录时如果没勾「Authenticate Git」，git 侧是没有凭据助手的，这里补一下
+  run gh auth setup-git --hostname github.com >/dev/null 2>&1 || true
+  if run git push -u origin "$BRANCH"; then
+    pushed=1
+  else
+    warn "git 凭据助手仍不可用，改用 gh token 直接推送"
+    TOKEN="$(gh auth token)"
+  fi
+fi
+
+if [[ $pushed -eq 0 ]]; then
+  [[ -n "$TOKEN" ]] || die "推送失败，且没有可用的 token"
   # 用带 token 的临时 URL 推送，避免把 token 写进 .git/config
   run git push "https://x-access-token:${TOKEN}@github.com/${OWNER}/${REPO_NAME}.git" "HEAD:refs/heads/${BRANCH}"
   run git fetch origin "$BRANCH" || true
