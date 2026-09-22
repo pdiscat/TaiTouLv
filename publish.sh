@@ -131,6 +131,14 @@ else
 fi
 
 # ---------------------------------------------------------------- 推送
+# 有些代理（本机 Clash 之类）会让 github.com 的 git 协议端点一直 408/超时，
+# 所以：正常推 → 失败就绕过代理直推（带 token）→ 再失败走 API 兜底。
+git_direct() {
+  env -u http_proxy -u https_proxy -u all_proxy \
+      -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY \
+      git -c http.proxy= -c https.proxy= "$@"
+}
+
 say "推送到 origin/$BRANCH"
 pushed=0
 if [[ $GH_OK -eq 1 ]]; then
@@ -139,17 +147,32 @@ if [[ $GH_OK -eq 1 ]]; then
   if run git push -u origin "$BRANCH"; then
     pushed=1
   else
-    warn "git 凭据助手仍不可用，改用 gh token 直接推送"
-    TOKEN="$(gh auth token)"
+    warn "直连推送失败（常见原因：代理挡住了 git 协议）"
+    TOKEN="${TOKEN:-$(gh auth token)}"
   fi
 fi
 
 if [[ $pushed -eq 0 ]]; then
   [[ -n "$TOKEN" ]] || die "推送失败，且没有可用的 token"
-  # 用带 token 的临时 URL 推送，避免把 token 写进 .git/config
-  run git push "https://x-access-token:${TOKEN}@github.com/${OWNER}/${REPO_NAME}.git" "HEAD:refs/heads/${BRANCH}"
-  run git fetch origin "$BRANCH" || true
-  run git branch --set-upstream-to="origin/${BRANCH}" "$BRANCH" || true
+  say "绕过代理重试（用 token 临时 URL，不写进 .git/config）"
+  if run git_direct push "https://x-access-token:${TOKEN}@github.com/${OWNER}/${REPO_NAME}.git" "HEAD:refs/heads/${BRANCH}"; then
+    run git_direct fetch origin "$BRANCH" || true
+    run git branch --set-upstream-to="origin/${BRANCH}" "$BRANCH" || true
+    pushed=1
+  fi
+fi
+
+if [[ $pushed -eq 0 ]]; then
+  warn "git 协议走不通，改用 GitHub API 提交（.github/publish_via_api.py）"
+  if [[ -x .github/publish_via_api.py ]]; then
+    run env OWNER="$OWNER" REPO_NAME="$REPO_NAME" BRANCH="$BRANCH" COMMIT_MSG="${COMMIT_MSG:-}" \
+      ./.github/publish_via_api.py
+    run git_direct fetch origin "$BRANCH" || true
+    run git reset --soft "origin/${BRANCH}" || true
+    pushed=1
+  else
+    die "推送失败：请检查网络/代理，或手动 git push"
+  fi
 fi
 
 # ---------------------------------------------------------------- 可选：Release + APK
