@@ -189,8 +189,20 @@ if [[ -n "$RELEASE_TAG" ]]; then
     fi
     if [[ $GH_OK -eq 1 ]]; then
       run git push origin "$tag"
-      say "创建 Release 并上传 APK"
-      run gh release create "$tag" "$APK_PATH" --title "$tag" --notes "发布 ${tag}（$(date '+%Y-%m-%d %H:%M')）"
+      say "创建/更新 Release 并上传 APK"
+      # 代理经常把 uploads.github.com 的大文件上传 reset 掉，失败就绕开代理重试
+      gh_direct() {
+        env -u http_proxy -u https_proxy -u all_proxy \
+            -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY gh "$@"
+      }
+      if gh release view "$tag" >/dev/null 2>&1; then
+        run gh release upload "$tag" "$APK_PATH" --clobber || run gh_direct release upload "$tag" "$APK_PATH" --clobber
+      else
+        run gh release create "$tag" "$APK_PATH" --title "$tag" --notes "发布 ${tag}" \
+          || run gh_direct release create "$tag" "$APK_PATH" --title "$tag" --notes "发布 ${tag}"
+      fi
+      # 草稿状态也一并发布出去，避免上传中断后留在草稿
+      run gh release edit "$tag" --draft=false || run gh_direct release edit "$tag" --draft=false
     else
       run git push "https://x-access-token:${TOKEN}@github.com/${OWNER}/${REPO_NAME}.git" "$tag"
       api="https://api.github.com/repos/${OWNER}/${REPO_NAME}"
