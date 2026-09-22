@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">抬头率检测</string>
+    <string name="need_camera_permission">需要摄像头权限才能统计抬头率</string>
+    <string name="grant_permission">授予摄像头权限</string>
+    <string name="stats_fmt">可见 %1$d　抬头 %2$d　低头 %3$d　趴桌 %4$d　闭眼 %5$d</string>
+    <string name="detail_fmt">即时 %1$.0f%%　最小脸 %2$dpx　事件 %3$d</string>
+    <string name="detail_warn_fmt">即时 %1$.0f%%　⚠最小脸 %2$dpx 机位偏远　事件 %3$d</string>
+    <string name="record_fmt">记录中：明细 %1$d 行 / 事件 %2$d 个 · %3$.1ffps</string>
+    <string name="record_start">开始记录</string>
+    <string name="record_stop">停止记录</string>
+    <string name="record_idle_fmt">未记录 · %1$.1ffps</string>
+    <string name="record_started_fmt">开始记录，保存到 %1$s</string>
+    <string name="record_stopped_fmt">已停止：明细 %1$d 行 / 事件 %2$d 个</string>
+    <string name="record_start_failed">无法创建记录文件</string>
+    <string name="rate_fmt">抬头率 %1$.1f%%</string>
+    <string name="rate_none">抬头率 --</string>
+    <string name="threshold_fmt">低于 %1$.0f° 记为低头（拖动上面滑块可调）</string>
+    <string name="threshold_fmt_short">低于 %1$.0f° 记为低头</string>
+    <string name="zoom_fmt">变焦 %1$.1f×　可用 %2$.1f×–%3$.1f×</string>
+    <string name="zoom_preset_fmt">%1$.1f×</string>
+    <string name="zoom_preset_ultra_fmt">%1$.1f× 超广角</string>
+    <string name="no_camera">无法启动摄像头：%1$s</string>
+    <string name="camera_fallback">该摄像头不支持当前组合，已切回默认后置摄像头</string>
+    <string name="orientation_auto">方向自动</string>
+    <string name="orientation_landscape">方向横屏</string>
+    <string name="orientation_portrait">方向竖屏</string>
+    <string name="hint_hidden">点屏幕显示控件</string>
+
+    <string name="records_button">数据</string>
+    <string name="records_title">数据记录</string>
+    <string name="records_refresh">刷新</string>
+    <string name="records_clear">清空</string>
+    <string name="records_chart">图表</string>
+    <string name="records_view">查看</string>
+    <string name="records_share">分享</string>
+    <string name="records_delete">删除</string>
+    <string name="records_delete_confirm">删除这个文件？</string>
+    <string name="records_delete_all_confirm">删除全部记录？</string>
+    <string name="records_delete_all_message">将删除 %1$d 个 CSV 文件，删除后无法恢复。</string>
+    <string name="records_deleted">已删除</string>
+    <string name="records_empty">暂无数据：去检测界面跑一会儿再回来看</string>
+    <string name="records_list_empty">还没有记录文件</string>
+    <string name="records_path_fmt">目录：%1$s（可 adb pull 拉走）</string>
+    <string name="records_summary_fmt">时长 %1$.0f 秒　平均抬头率 %2$.1f%%　最低 %3$.1f%%　最高 %4$.1f%%\n平均可见 %5$.1f 人　低头事件 %6$d　趴桌事件 %7$d</string>
+    <string name="record_meta_fmt">%1$s　%2$d 行　%3$s</string>
+    <string name="records_hint">图表按每 5 秒一条的记录绘制；红色竖线＝低头事件，紫色＝趴桌事件。回到检测界面会继续往同一个文件记录。</string>
+</resources>

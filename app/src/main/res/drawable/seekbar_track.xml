@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 加粗的滑块轨道，手指更好按、老远也看得清 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <size android:height="10dp" />
+            <corners android:radius="5dp" />
+            <solid android:color="#33FFFFFF" />
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <size android:height="10dp" />
+                <corners android:radius="5dp" />
+                <solid android:color="#007AFF" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>

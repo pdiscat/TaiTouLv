@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 分享 CSV 用的 FileProvider 路径：App 外部私有目录 + 内部 files 目录 -->
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-files-path
+        name="records"
+        path="." />
+    <files-path
+        name="internal"
+        path="." />
+</paths>

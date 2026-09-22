@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.TaiTouLv">
+
+        <!-- screenOrientation="sensor"：按方向传感器自动旋转。
+             注意这一项会**无视系统里的「自动旋转」开关**（很多人是锁竖屏的），
+             App 内部还提供「方向：自动/横屏/竖屏」按钮做手动覆盖。
+             不声明 configChanges，旋转时重建 Activity，CameraX 会按新方向重算 ViewPort -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="sensor">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 数据记录管理（列表 / 曲线 / 查看 / 分享 / 删除） -->
+        <activity
+            android:name=".RecordsActivity"
+            android:exported="false"
+            android:label="@string/records_title" />
+
+        <!-- 分享 csv 文件用 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>
