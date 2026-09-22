@@ -190,7 +190,7 @@ if [[ -n "$RELEASE_TAG" ]]; then
     if [[ $GH_OK -eq 1 ]]; then
       run git push origin "$tag"
       say "创建 Release 并上传 APK"
-      run gh release create "$tag" "$APK_PATH" --title "$tag" --notes "发布 $tag（$(date '+%Y-%m-%d %H:%M')）"
+      run gh release create "$tag" "$APK_PATH" --title "$tag" --notes "发布 ${tag}（$(date '+%Y-%m-%d %H:%M')）"
     else
       run git push "https://x-access-token:${TOKEN}@github.com/${OWNER}/${REPO_NAME}.git" "$tag"
       api="https://api.github.com/repos/${OWNER}/${REPO_NAME}"
