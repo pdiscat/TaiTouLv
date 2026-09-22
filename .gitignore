@@ -12,3 +12,8 @@ captures/
 *.aab
 *.jks
 *.keystore
+
+# 仅本地使用的发布工具（不属于项目源码，不进仓库）
+publish.sh
+PUBLISH.md
+.github/
