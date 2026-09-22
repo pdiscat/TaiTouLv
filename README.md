@@ -34,6 +34,8 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 ./gradlew testDebugUnitTest        # 跑单元测试
 ```
 
+不想自己编译的话，直接下载 [Releases](https://github.com/pdiscat/TaiTouLv/releases) 里的 APK 侧载安装（Android 7.0+）。
+
 更详细的构建方式、界面说明、判定原理、踩坑记录与部署建议见下文。
 
 ## 项目说明

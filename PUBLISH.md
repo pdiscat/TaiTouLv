@@ -64,3 +64,27 @@ DESCRIPTION="一句话简介" ./publish.sh
 - `docs/screenshot-chart.png`：数据页截图（README 里引用）
 
 不进仓库：`build/`、`.gradle/`、`.idea/`、`local.properties`、`*.apk`、密钥文件。
+
+## 如果 git push 一直超时 / 报 408
+
+本机开着代理（Clash 之类）时，`github.com` 的 **git 协议端点**经常被挡：报
+`RPC failed; HTTP 408` 或 `could not read Username`。脚本已经内置三级兜底，会自动处理：
+
+1. 先正常 `git push`（并自动 `gh auth setup-git` 补上 git 凭据助手）；
+2. 失败就**绕过代理直推**：等效于
+   ```bash
+   env -u http_proxy -u https_proxy -u all_proxy \
+     git push https://x-access-token:$(gh auth token)@github.com/pdiscat/TaiTouLv.git HEAD:refs/heads/main
+   ```
+3. 还不行就走 **GitHub API 提交**（`.github/publish_via_api.py`，只用 api.github.com，不碰 git 协议）。
+
+手动排查：
+
+```bash
+gh auth status                                   # 确认登录
+curl -sI --max-time 10 https://github.com -o /dev/null -w '%{http_code}\n'
+env -u https_proxy git ls-remote https://github.com/pdiscat/TaiTouLv.git   # 直连能否读到 refs
+```
+
+> 经验：这台机器上 **直连比走代理快**（api.github.com 直连 0.4s，走代理反而 TLS 超时），
+> 所以脚本里对 `git push` / API 兜底都默认绕开代理。
