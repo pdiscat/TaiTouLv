@@ -59,13 +59,15 @@ fi
 GH_OK=0
 if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then GH_OK=1; fi
 
-if [[ -z "$TOKEN" && $GH_OK -eq 0 ]]; then
+if [[ -z "$TOKEN" && $GH_OK -eq 0 && $DRY_RUN -eq 0 ]]; then
   die "没有可用凭据，二选一：
   A) brew install gh && gh auth login
   B) 在 GitHub 建 Personal Access Token（勾 repo 权限）后执行：
        mkdir -p ~/.config/taitoulv && printf '%s' '你的token' > ~/.config/taitoulv/token && chmod 600 ~/.config/taitoulv/token"
 fi
-[[ $GH_OK -eq 1 ]] && say "使用 gh CLI 认证" || say "使用 Token 认证（$TOKEN_FILE）"
+if [[ $GH_OK -eq 1 ]]; then say "使用 gh CLI 认证"
+elif [[ -n "$TOKEN" ]]; then say "使用 Token 认证（$TOKEN_FILE）"
+else warn "未检测到凭据（dry-run 模式，仅演示流程）"; fi
 
 # ---------------------------------------------------------------- 本地仓库
 say "本地仓库：$(pwd)"
